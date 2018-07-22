@@ -9,7 +9,7 @@ const (
 
 type node struct {
 	left, right, parent *node
-	value               Item
+	key                 Item
 	c                   Color
 }
 
