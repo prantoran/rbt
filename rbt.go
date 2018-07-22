@@ -135,7 +135,8 @@ func (t *Tree) transplant(u, v *node) {
 	v.parent = u.parent
 }
 
-func (t *Tree) Find(i Item) *node {
+// find returns the node in tree that contains the item i
+func (t *Tree) find(i Item) *node {
 	z := node{
 		key: i,
 	}
@@ -154,7 +155,7 @@ func (t *Tree) Find(i Item) *node {
 // and fixes the chain of nodes upwards if
 // the properties are broken
 func (t *Tree) Delete(i Item) {
-	z := t.Find(i)
+	z := t.find(i)
 	y := z
 	yc := y.c // y-original-color
 	var x *node
@@ -186,8 +187,15 @@ func (t *Tree) Delete(i Item) {
 
 }
 
-func (t *Tree) minimum(n *node) *node {
-	return nil
+func (t *Tree) minimum(x *node) *node {
+	if x == nil {
+		return nil
+	}
+	var ret = x
+	for ret.left != nil {
+		ret = ret.left
+	}
+	return ret
 }
 
 func (t *Tree) deleteFixup(x *node) {
@@ -216,6 +224,34 @@ func (t *Tree) deleteFixup(x *node) {
 			x.parent.c = Black
 			w.right.c = Black
 			t.leftRotate(x.parent)
+			x = t.root
+			continue
+		}
+		// symmetrical
+		if x == x.parent.right {
+			w := x.parent.left
+			if w.c == Red { // case 1
+				w.c = Black
+				x.parent.c = Red
+				t.rightRotate(x.parent)
+				w = x.parent.left
+			}
+			if w.left.c == Black && w.right.c == Black { // case 2
+				w.c = Red
+				x = x.parent
+				continue
+			}
+			if w.left.c == Black { // case 3
+				w.right.c = Black
+				w.c = Red
+				t.leftRotate(w)
+				w = x.parent.left
+			}
+			// case 4
+			w.c = x.parent.c
+			x.parent.c = Black
+			w.left.c = Black
+			t.rightRotate(x.parent)
 			x = t.root
 			continue
 		}
