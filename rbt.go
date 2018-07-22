@@ -44,3 +44,39 @@ func (t *Tree) rightRotate(x *node) {
 	x.parent = y
 
 }
+
+// Insert encapsulates Item i with node, inserts node z
+// into tree in a similar way to binary search tree,
+// then fixes any violations to red black tree properties
+func (t *Tree) Insert(i Item) {
+	z := node{
+		key: i,
+	}
+	var y *node
+	x := t.root
+	for x != nil {
+		y = x
+		if z.key.Compare(x.key) {
+			x = x.left
+			continue
+		} else {
+			x = x.right
+		}
+	}
+	z.parent = y
+	if y == nil {
+		t.root = &z
+	} else if z.key.Compare(y.key) {
+		y.left = &z
+	} else {
+		y.right = &z
+	}
+	z.left = nil
+	z.right = nil
+	z.c = Red
+	t.insertFixup(&z)
+}
+
+func (t *Tree) insertFixup(z *node) {
+
+}
