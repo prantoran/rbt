@@ -123,8 +123,8 @@ func (t *Tree) insertFixup(z *node) {
 	t.root.c = Black
 }
 
-// Transplant replace node ref u with node ref v
-func (t *Tree) Transplant(u, v *node) {
+// transplant replace node ref u with node ref v
+func (t *Tree) transplant(u, v *node) {
 	if u.parent == nil {
 		t.root = v
 	} else if u == u.parent.left {
@@ -135,3 +135,45 @@ func (t *Tree) Transplant(u, v *node) {
 	v.parent = u.parent
 }
 
+func (t *Tree) Delete(i Item) {
+	z := node{
+		key: i,
+	}
+	var y *node = &z
+	var x *node
+	var yc = y.c // y-original-color
+	if z.left == nil {
+		x = z.right
+		t.transplant(&z, z.left)
+	} else if z.right == nil {
+		x = z.left
+		t.transplant(&z, z.right)
+	} else {
+		y = t.minimum(z.right)
+		yc = y.c
+		x = y.right
+		if y.parent == &z {
+			x.parent = y
+		} else {
+			t.transplant(y, y.right)
+			y.right = z.right
+			y.right.parent = y
+		}
+		t.transplant(&z, y)
+		y.left = z.left
+		y.left.parent = y
+		y.c = z.c
+	}
+	if yc == Black {
+		t.deleteFixup(x)
+	}
+
+}
+
+func (t *Tree) minimum(n *node) *node {
+	return nil
+}
+
+func (t *Tree) deleteFixup(x *node) {
+
+}
