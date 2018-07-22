@@ -122,3 +122,16 @@ func (t *Tree) insertFixup(z *node) {
 	}
 	t.root.c = Black
 }
+
+// Transplant replace node ref u with node ref v
+func (t *Tree) Transplant(u, v *node) {
+	if u.parent == nil {
+		t.root = v
+	} else if u == u.parent.left {
+		u.parent.left = v
+	} else {
+		u.parent.right = v
+	}
+	v.parent = u.parent
+}
+
