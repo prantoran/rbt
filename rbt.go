@@ -45,7 +45,8 @@ func (t *Tree) rightRotate(x *node) {
 
 }
 
-// transplant replace node ref u with node ref v
+// transplant replace node ref u with node ref v,
+// should only be used when u has less than 2 children
 func (t *Tree) transplant(u, v *node) {
 	if u.parent == nil {
 		t.root = v
@@ -63,13 +64,19 @@ func (t *Tree) find(i Item) *node {
 		key: i,
 	}
 	x := t.root
-	var y *node
-	for x != nil && z.key.Compare(x.key) {
-		y = x.left
+
+	for x != nil {
+		if x.key == i {
+			return x
+		}
+
+		if z.key.Compare(x.key) {
+			x = x.left
+			continue
+		}
+		x = x.right
 	}
-	if y.key == i {
-		return y
-	}
+
 	return nil
 }
 
